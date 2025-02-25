@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question 31:40</title>
+    <style>
+        body {
+            background-color: #bcb4b4;
+            font-family: Arial, sans-serif;
+        }
+
+        .quiz-container {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 700px;
+            margin: 2em auto;
+            padding: 2em;
+            background-color: rgb(255, 255, 255);
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            margin-top: 1em;
+        }
+
+        .choice {
+            font-size: 1em;
+            display: block;
+            margin: 5px 0;
+            padding: 0.7em 1em;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: left;
+        }
+
+        .choice:hover {
+            background-color: #2980b9;
+        }
+
+        .choice.correct {
+            background-color: #2ecc71 !important;
+        }
+
+        .choice.incorrect {
+            background-color: #e74c3c !important;
+        }
+
+        #feedback {
+            margin-top: 1em;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .summary {
+            margin-top: 2em;
+        }
+
+        .summary h2 {
+            margin-bottom: 1em;
+        }
+
+        .summary-item {
+            margin-bottom: 1.5em;
+            padding: 1em;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item.correct-answer {
+            background-color: #e8f5e9;
+            border-left: 5px solid #2ecc71;
+        }
+
+        .summary-item.incorrect-answer {
+            background-color: #ffebee;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .summary-item p {
+            margin: 0.5em 0;
+        }
+
+        .correct-text {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .incorrect-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1 style="font-family:'Times New Roman', Times, serif">Permutation & Combinations:</h1>
+                
+        <div class="question">
+            <p id="question-text">Question 1:In a convocation there are 450 People present of which 300 Males and 150 females. How many hands shake are possible if every person shakes hands with Others?</p>
+            
+            <div class="choices">
+                <button class="choice" onclick="checkAnswer(0)">101035</button>
+                <button class="choice" onclick="checkAnswer(1)">101025</button>
+                <button class="choice" onclick="checkAnswer(2)">201024</button>
+                <button class="choice" onclick="checkAnswer(3)">None</button>
+            </div>
+            <p id="feedback"></p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "If no repetition is not allowed then how many numbers between 2000 and 3000 can be formed using the digits from 0 to 7?", 
+            choices: ["42",             "336",             "210",              "440"], 
+            correct: 2 },
+            { question: " In how many ways can Kamal choose a consonant and a vowel from the letters of the word ALLAHABAD?", 
+            choices: ["4"             ,"5",               "6",           "9"],
+             correct: 0 },
+            { question: "Find out the number of distinctive words that can be formed using the word GOOD?", 
+            choices: ["16","24","28","48"],
+             correct: 1},
+            { question: "How many different words can be formed from the alphabets of the word SCISSORS ?",
+             choices: ["1440"         ,"1680"               ,"1800"          ,"2100"], 
+             correct: 1 },
+            { question: " How many distinct words can be formed using the word MINIMUM?",
+             choices: ["420",           "450",            "1024",            "1048"], 
+             correct: 0 },
+            { question: "If repetition is allowed then how many different three digits numbers can be formed using the digits from 1 to 5?", 
+            choices: ["125"         ,"27"         ,"120"           ,"None of the above"],
+             correct: 0},
+            { question: "In how many ways can two letters be selected from the English alphabet if repetition is allowed?", 
+            choices: ["650"         ,"325","52"          ,"51"], 
+            correct: 1 },
+            { question: "Priya has five friends in how many ways can she invited five or more friends for dinner??",
+             choices: ["6","7"           ,"15"            ,"21"], 
+             correct: 1 },
+            { question: " When repetition is allowed, how many numbers between 2000 and 4000 can be selected from the digits 1 to 5?",
+             choices: ["248"          ,"249"         ,"250"               ,"128"],
+              correct: 1 },
+              { question: " How many can four digits be formed using the digits 0, 1, 2, and 3 (repetition is allowed)",
+             choices: ["12"          ,"24"          ,"256"          ,"192"],
+              correct: 3},              
+        ];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        const userSelections = [];
+
+        function showQuestion() {
+            const questionText = document.getElementById("question-text");
+            questionText.textContent = `Question ${currentQuestion + 1}: ${questions[currentQuestion].question}`;
+
+            const choices = document.querySelectorAll(".choice");
+            choices.forEach((choice, index) => {
+                choice.textContent = questions[currentQuestion].choices[index];
+                choice.classList.remove("correct", "incorrect");
+                choice.disabled = false; 
+            });
+
+            const feedback = document.getElementById("feedback");
+            feedback.textContent = "";
+        }
+
+        function checkAnswer(selected) {
+            const choices = document.querySelectorAll(".choice");
+            const feedback = document.getElementById("feedback");
+            const correctIndex = questions[currentQuestion].correct;
+
+            userSelections.push({
+                question: questions[currentQuestion].question,
+                selected: selected,
+                correct: correctIndex
+            });
+
+            
+            choices.forEach((choice, index) => {
+                choice.disabled = true;
+                if (index === correctIndex) {
+                    choice.classList.add("correct"); 
+                }
+            });
+
+            if (selected === correctIndex) {
+                feedback.textContent = "Correct!";
+                correctAnswers++;
+            } else {
+                feedback.textContent = "Incorrect!";
+                choices[selected].classList.add("incorrect");
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showSummary();
+                }
+            }, 2000); 
+        }
+        function showSummary() {
+    const quizContainer = document.querySelector(".quiz-container");
+    quizContainer.innerHTML = `
+        <h2>Quiz Summary</h2>
+        <table class="summary-table" border="1" cellspacing="0" cellpadding="10">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Your Answer</th>
+                    <th>Correct Answer</th>
+                </tr>
+            </thead>
+            <tbody class="summary"></tbody>
+        </table>
+    `;
+
+    const summaryTable = document.querySelector(".summary");
+
+    userSelections.forEach((selection, index) => {
+        const questionObj = questions[index];
+        const isCorrect = selection.selected === selection.correct;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${selection.question}</td>
+            <td class="${isCorrect ? 'correct-text' : 'incorrect-text'}">${questionObj.choices[selection.selected]}</td>
+            <td>${questionObj.choices[selection.correct]}</td>
+        `;
+
+        summaryTable.appendChild(row);
+    });
+
+    const totalCorrect = document.createElement("p");
+    totalCorrect.innerHTML = `<strong>You got ${correctAnswers} out of ${questions.length} questions correct.</strong>`;
+    totalCorrect.style.fontSize = "1.2em";
+    totalCorrect.style.marginTop = "1.5em";
+    quizContainer.appendChild(totalCorrect);
+}
+
+        showQuestion();
+    </script>
+</body>
+</html>

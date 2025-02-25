@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question 11:20</title>
+    <style>
+        body {
+            background-color: #bcb4b4;
+            font-family: Arial, sans-serif;
+        }
+
+        .quiz-container {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 700px;
+            margin: 2em auto;
+            padding: 2em;
+            background-color: rgb(255, 255, 255);
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            margin-top: 1em;
+        }
+
+        .choice {
+            font-size: 1em;
+            display: block;
+            margin: 5px 0;
+            padding: 0.7em 1em;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: left;
+        }
+
+        .choice:hover {
+            background-color: #2980b9;
+        }
+
+        .choice.correct {
+            background-color: #2ecc71 !important;
+        }
+
+        .choice.incorrect {
+            background-color: #e74c3c !important;
+        }
+
+        #feedback {
+            margin-top: 1em;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .summary {
+            margin-top: 2em;
+        }
+
+        .summary h2 {
+            margin-bottom: 1em;
+        }
+
+        .summary-item {
+            margin-bottom: 1.5em;
+            padding: 1em;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item.correct-answer {
+            background-color: #e8f5e9;
+            border-left: 5px solid #2ecc71;
+        }
+
+        .summary-item.incorrect-answer {
+            background-color: #ffebee;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .summary-item p {
+            margin: 0.5em 0;
+        }
+
+        .correct-text {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .incorrect-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1 style="font-family:'Times New Roman', Times, serif">Permutation & Combinations:</h1> 
+    
+        <div class="question">
+            <p id="question-text">Question 1:Find no of ways in which 4 particular persons a,b,c,d and 6 more persons can stand in a queue so that A always stand just before B. B always stand just before C, and C always stand just before D?</p>
+            <div class="choices">
+                <button class="choice" onclick="checkAnswer(0)">6!</button>
+                <button class="choice" onclick="checkAnswer(1)">7!</button>
+                <button class="choice" onclick="checkAnswer(2)">15!</button>
+                <button class="choice" onclick="checkAnswer(3)">4!</button>
+            </div>
+            <p id="feedback"></p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+              { question: "Find no of ways in which 4 particular persons a,b,c,d and 6 more persons can stand in a queue so that A always stand just before B. B always stand just before C, and C always stand just before D?",
+             choices: ["6!","7!","15!","4!"],
+              correct: 1 },
+              { question: "There are 10 points on a straight line AB and 8 on another straight line AC none of them being point A. how many triangles can be formed with these points as vertices?",
+             choices: ["680","720","640","816"],
+              correct: 0 },
+              { question: "Find the number of ways a batsman can score a double century only in terms of 4's & 6's?",
+             choices: ["32","16","24","256"],
+              correct: 1 },
+              { question: "How many positive integer numbers not more than 4300 can be formed with the digits 0, 1, 2, 3, 4 if repetitions are allowed?",
+             choices: ["625","560","565","575"],
+              correct: 3 },
+              { question: "In a 3x3 square grid comprising 9 tiles, each tile can be painted in red or blue colour. When the tile is rotated by 180 degrees, there is no difference which can be spotted. How many such possibilities are there?",
+             choices: ["16","64","32","74"],
+              correct: 2 },
+              { question: "How many 6 digit even numbers can be formed from digits 1 2 3 4 5 6 7 so that the digit should not repeat and the second last digit is even?",
+             choices: ["720","320","6480","2160"],
+              correct: 0 },
+              { question: "How many vehicle registration plate numbers can be formed with digits 1,2,3,4,5 (no digit being repeated)if it's given that registration number can have 1 to 5 digits?",
+             choices: ["325","205","100","105"],
+              correct: 0 },
+              { question: "There are 20 persons sitting in a circle. In that, there are 18 men and 2 sisters. How many arrangements are possible, in which the two sisters are always separated by a man?",
+             choices: ["2","17!*2","17!","18!*2"],
+              correct: 3},
+              { question: "A number plate can be formed with two alphabets followed by two digits with no repetition. then how many possible combinations can we get?",
+             choices: ["67600","64320","58500","65000"],
+              correct: 2 },
+              { question: "In how many ways a team of 11 must be selected a team 5 men and 11 women such that the team must comprise of not more than 3 men?",
+             choices: ["1234","2256","2456","1565"],
+              correct: 1 },
+        ];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        const userSelections = [];
+
+        function showQuestion() {
+            const questionText = document.getElementById("question-text");
+            questionText.textContent = `Question ${currentQuestion + 1}: ${questions[currentQuestion].question}`;
+
+            const choices = document.querySelectorAll(".choice");
+            choices.forEach((choice, index) => {
+                choice.textContent = questions[currentQuestion].choices[index];
+                choice.classList.remove("correct", "incorrect");
+                choice.disabled = false; 
+            });
+
+            const feedback = document.getElementById("feedback");
+            feedback.textContent = "";
+        }
+
+        function checkAnswer(selected) {
+            const choices = document.querySelectorAll(".choice");
+            const feedback = document.getElementById("feedback");
+            const correctIndex = questions[currentQuestion].correct;
+
+            userSelections.push({
+                question: questions[currentQuestion].question,
+                selected: selected,
+                correct: correctIndex
+            });
+
+            
+            choices.forEach((choice, index) => {
+                choice.disabled = true;
+                if (index === correctIndex) {
+                    choice.classList.add("correct"); 
+                }
+            });
+
+            if (selected === correctIndex) {
+                feedback.textContent = "Correct!";
+                correctAnswers++;
+            } else {
+                feedback.textContent = "Incorrect!";
+                choices[selected].classList.add("incorrect");
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showSummary();
+                }
+            }, 2000); 
+        }
+        function showSummary() {
+    const quizContainer = document.querySelector(".quiz-container");
+    quizContainer.innerHTML = `
+        <h2>Quiz Summary</h2>
+        <table class="summary-table" border="1" cellspacing="0" cellpadding="10">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Your Answer</th>
+                    <th>Correct Answer</th>
+                </tr>
+            </thead>
+            <tbody class="summary"></tbody>
+        </table>
+    `;
+
+    const summaryTable = document.querySelector(".summary");
+
+    userSelections.forEach((selection, index) => {
+        const questionObj = questions[index];
+        const isCorrect = selection.selected === selection.correct;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${selection.question}</td>
+            <td class="${isCorrect ? 'correct-text' : 'incorrect-text'}">${questionObj.choices[selection.selected]}</td>
+            <td>${questionObj.choices[selection.correct]}</td>
+        `;
+
+        summaryTable.appendChild(row);
+    });
+
+    const totalCorrect = document.createElement("p");
+    totalCorrect.innerHTML = `<strong>You got ${correctAnswers} out of ${questions.length} questions correct.</strong>`;
+    totalCorrect.style.fontSize = "1.2em";
+    totalCorrect.style.marginTop = "1.5em";
+    quizContainer.appendChild(totalCorrect);
+}
+
+        showQuestion();
+    </script>
+</body>
+</html>

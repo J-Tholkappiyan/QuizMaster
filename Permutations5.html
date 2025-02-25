@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question 41:50</title>
+    <style>
+        body {
+            background-color: #bcb4b4;
+            font-family: Arial, sans-serif;
+        }
+
+        .quiz-container {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 700px;
+            margin: 2em auto;
+            padding: 2em;
+            background-color: rgb(255, 255, 255);
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            margin-top: 1em;
+        }
+
+        .choice {
+            font-size: 1em;
+            display: block;
+            margin: 5px 0;
+            padding: 0.7em 1em;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: left;
+        }
+
+        .choice:hover {
+            background-color: #2980b9;
+        }
+
+        .choice.correct {
+            background-color: #2ecc71 !important;
+        }
+
+        .choice.incorrect {
+            background-color: #e74c3c !important;
+        }
+
+        #feedback {
+            margin-top: 1em;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .summary {
+            margin-top: 2em;
+        }
+
+        .summary h2 {
+            margin-bottom: 1em;
+        }
+
+        .summary-item {
+            margin-bottom: 1.5em;
+            padding: 1em;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item.correct-answer {
+            background-color: #e8f5e9;
+            border-left: 5px solid #2ecc71;
+        }
+
+        .summary-item.incorrect-answer {
+            background-color: #ffebee;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .summary-item p {
+            margin: 0.5em 0;
+        }
+
+        .correct-text {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .incorrect-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1 style="font-family:'Times New Roman', Times, serif">Permutation & Combinations:</h1>
+                
+        <div class="question">
+            <p id="question-text">Question 1:In a convocation there are 450 People present of which 300 Males and 150 females. How many hands shake are possible if every person shakes hands with Others?</p>
+            <div class="choices">
+                <button class="choice" onclick="checkAnswer(0)">101035</button>
+                <button class="choice" onclick="checkAnswer(1)">101025</button>
+                <button class="choice" onclick="checkAnswer(2)">201024</button>
+                <button class="choice" onclick="checkAnswer(3)">None</button>
+            </div>
+            <p id="feedback"></p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "In a word jumble, there are 8 consonants and 5 vowels given. Find out in how many ways can we form a 5-letter word having three consonants and 2 vowels?", 
+            choices: ["67200"            ,"8540"           ,"720"           ,"None of these"], 
+            correct: 0 },
+            { question: "There are 45 games in total in a competition. Many teams took part in the competition and each of them must play one with the other teams. In total how many teams took part in the competition?", 
+            choices: ["5","10"        ,"15"            ,"20"],
+             correct: 1},
+            { question: "In how many ways can you select a diamond or a king from a pack of cards?", 
+            choices: ["16"             ,"20","24"            ,"8"],
+             correct: 0 },
+            { question: " A circular table has 6 chairs, out of this 6, five are identical. In how many ways can the six people be arranged on these chairs?",
+             choices: ["120"          ,"720" ,"360",              "60"], 
+             correct: 1 },
+            { question: " Jay invited 10 of his friends on his birthday. If all of them greeted each other with a handshake then how many handshakes will take place?",
+             choices: ["90"           ,"110"             ,"45"           ,"55"], 
+             correct: 0 },
+            { question: "In how many can the 4 couples sit around a circular table so that no two men are sitting together?", 
+            choices: ["7!"          ,"6!"             ,"3!*4!"            ,"3!*3!"],
+             correct: 2},
+            { question: "There are three dice each of them having faces with a number from 1 to 6. These dices are rolled. Find the number of possible outcomes such that at least one of the dice shows the number 2?", 
+            choices: [" 36","91","81","116"], 
+            correct: 1 },
+            { question: "In a cricket championship, there are 21 matches. If each team plays one match with every other team, the number of teams is ?",
+             choices: ["72","9","104","None of these"], 
+             correct: 0 },
+            { question: " A box contains three white balls, four black balls and three red balls. The number of ways in which three balls can be drawn from the box so that at least one of the balls is black is?",
+             choices: ["502","100","1504","200"],
+              correct: 1 },
+              { question: "In an examination, a candidate is required to pass all five different subjects. The number of ways he can fail is?",
+             choices: ["322","31","304","29"],
+              correct: 1},              
+        ];
+
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        const userSelections = [];
+
+        function showQuestion() {
+            const questionText = document.getElementById("question-text");
+            questionText.textContent = `Question ${currentQuestion + 1}: ${questions[currentQuestion].question}`;
+
+            const choices = document.querySelectorAll(".choice");
+            choices.forEach((choice, index) => {
+                choice.textContent = questions[currentQuestion].choices[index];
+                choice.classList.remove("correct", "incorrect");
+                choice.disabled = false; 
+            });
+
+            const feedback = document.getElementById("feedback");
+            feedback.textContent = "";
+        }
+
+        function checkAnswer(selected) {
+            const choices = document.querySelectorAll(".choice");
+            const feedback = document.getElementById("feedback");
+            const correctIndex = questions[currentQuestion].correct;
+
+            userSelections.push({
+                question: questions[currentQuestion].question,
+                selected: selected,
+                correct: correctIndex
+            });
+
+            
+            choices.forEach((choice, index) => {
+                choice.disabled = true;
+                if (index === correctIndex) {
+                    choice.classList.add("correct"); 
+                }
+            });
+
+            if (selected === correctIndex) {
+                feedback.textContent = "Correct!";
+                correctAnswers++;
+            } else {
+                feedback.textContent = "Incorrect!";
+                choices[selected].classList.add("incorrect");
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showSummary();
+                }
+            }, 2000); 
+        }
+        function showSummary() {
+    const quizContainer = document.querySelector(".quiz-container");
+    quizContainer.innerHTML = `
+        <h2>Quiz Summary</h2>
+        <table class="summary-table" border="1" cellspacing="0" cellpadding="10">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Your Answer</th>
+                    <th>Correct Answer</th>
+                </tr>
+            </thead>
+            <tbody class="summary"></tbody>
+        </table>
+    `;
+
+    const summaryTable = document.querySelector(".summary");
+
+    userSelections.forEach((selection, index) => {
+        const questionObj = questions[index];
+        const isCorrect = selection.selected === selection.correct;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${selection.question}</td>
+            <td class="${isCorrect ? 'correct-text' : 'incorrect-text'}">${questionObj.choices[selection.selected]}</td>
+            <td>${questionObj.choices[selection.correct]}</td>
+        `;
+
+        summaryTable.appendChild(row);
+    });
+
+    const totalCorrect = document.createElement("p");
+    totalCorrect.innerHTML = `<strong>You got ${correctAnswers} out of ${questions.length} questions correct.</strong>`;
+    totalCorrect.style.fontSize = "1.2em";
+    totalCorrect.style.marginTop = "1.5em";
+    quizContainer.appendChild(totalCorrect);
+}
+
+        showQuestion();
+    </script>
+</body>
+</html>
